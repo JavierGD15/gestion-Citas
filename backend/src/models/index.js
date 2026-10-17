@@ -7,3 +7,4 @@ export { default as Contador } from './Contador.js';
 export { default as Paciente } from './Paciente.js';
 export { default as Responsable } from './Responsable.js';
 export { default as Profesional } from './Profesional.js';
+export { default as SolicitudCita } from './SolicitudCita.js';
