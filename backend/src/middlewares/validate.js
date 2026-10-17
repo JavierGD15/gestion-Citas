@@ -6,7 +6,7 @@ function handleValidation(req, res, next) {
   if (result.isEmpty()) {
     return next();
   }
-  const details = result.array().map((error) => ({ campo: error.path, mensaje: error.msg }));
+  const details = result.array({ onlyFirstError: true }).map((error) => ({ campo: error.path, mensaje: error.msg }));
   return next(new ApiError(400, 'Los datos enviados no son válidos', details));
 }
 
