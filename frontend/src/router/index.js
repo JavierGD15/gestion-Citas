@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import PublicLayout from '@/layouts/PublicLayout.vue';
 import AdminLayout from '@/layouts/AdminLayout.vue';
+import { useAuthStore } from '@/stores/auth';
+import { TODOS_LOS_ROLES } from '@/utils/roles';
 
 const routes = [
   {
@@ -18,8 +20,10 @@ const routes = [
   {
     path: '/admin',
     component: AdminLayout,
+    meta: { requiresAuth: true },
     children: [
-      { path: '', name: 'admin-dashboard', component: () => import('@/views/admin/DashboardView.vue') }
+      { path: '', name: 'admin-dashboard', component: () => import('@/views/admin/DashboardView.vue'), meta: { roles: TODOS_LOS_ROLES } },
+      { path: 'cuenta', name: 'admin-cuenta', component: () => import('@/views/admin/CuentaView.vue'), meta: { roles: TODOS_LOS_ROLES } }
     ]
   },
   {
@@ -35,6 +39,28 @@ const router = createRouter({
   scrollBehavior() {
     return { top: 0 };
   }
+});
+
+router.beforeEach(async (to) => {
+  const auth = useAuthStore();
+
+  if (!auth.cargado) {
+    await auth.cargarSesion();
+  }
+
+  if (to.meta.requiresAuth && !auth.autenticado) {
+    return { name: 'login', query: { redirect: to.fullPath } };
+  }
+
+  if (to.meta.roles && !auth.tieneRol(...to.meta.roles)) {
+    return { name: 'admin-dashboard' };
+  }
+
+  if (to.name === 'login' && auth.autenticado) {
+    return { name: 'admin-dashboard' };
+  }
+
+  return true;
 });
 
 export default router;
