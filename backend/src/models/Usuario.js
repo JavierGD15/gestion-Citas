@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import bcrypt from 'bcryptjs';
 import toJSONPlugin from './plugins/toJSON.js';
 import { ROLES, ESTADOS } from '../constants/index.js';
 
@@ -17,6 +18,17 @@ const usuarioSchema = new mongoose.Schema(
 usuarioSchema.virtual('nombreCompleto').get(function nombreCompleto() {
   return `${this.nombres} ${this.apellidos}`;
 });
+
+usuarioSchema.pre('save', async function hashPassword() {
+  if (!this.isModified('password')) {
+    return;
+  }
+  this.password = await bcrypt.hash(this.password, 12);
+});
+
+usuarioSchema.methods.compararPassword = function compararPassword(password) {
+  return bcrypt.compare(password, this.password);
+};
 
 usuarioSchema.plugin(toJSONPlugin);
 

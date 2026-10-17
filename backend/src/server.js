@@ -4,6 +4,9 @@ import { connectDB } from './config/db.js';
 
 async function start() {
   try {
+    if (!env.jwtSecret) {
+      throw new Error('La variable JWT_SECRET es obligatoria');
+    }
     await connectDB();
     console.log('MongoDB conectado');
     app.listen(env.port, () => {
