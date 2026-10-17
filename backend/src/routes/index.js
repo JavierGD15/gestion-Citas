@@ -10,6 +10,7 @@ import pacienteRoutes from './paciente.routes.js';
 import responsableRoutes from './responsable.routes.js';
 import profesionalRoutes from './profesional.routes.js';
 import solicitudRoutes from './solicitud.routes.js';
+import citaRoutes from './cita.routes.js';
 
 const router = Router();
 
@@ -24,5 +25,6 @@ router.use('/pacientes', pacienteRoutes);
 router.use('/responsables', responsableRoutes);
 router.use('/profesionales', profesionalRoutes);
 router.use('/solicitudes-cita', solicitudRoutes);
+router.use('/citas', citaRoutes);
 
 export default router;

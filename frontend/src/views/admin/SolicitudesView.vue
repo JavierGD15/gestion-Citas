@@ -45,6 +45,7 @@
               <td>
                 <div class="actions">
                   <button type="button" class="btn btn-secondary btn-sm" @click="verDetalle(solicitud)">Ver</button>
+                  <button v-if="solicitud.estado === 'PENDIENTE'" type="button" class="btn btn-primary btn-sm" @click="abrirConversion(solicitud)">Convertir en cita</button>
                   <button v-if="solicitud.estado === 'PENDIENTE'" type="button" class="btn btn-danger btn-sm" @click="abrirRechazo(solicitud)">Rechazar</button>
                 </div>
               </td>
@@ -84,10 +85,15 @@
         </template>
         <template v-if="seleccionada.cita">
           <dt>Cita generada</dt>
-          <dd>{{ seleccionada.cita.codigo }} · {{ formatearFecha(seleccionada.cita.fecha) }} {{ seleccionada.cita.horaInicio }}</dd>
+          <dd>
+            <RouterLink :to="{ name: 'admin-cita-detalle', params: { id: seleccionada.cita._id } }">{{ seleccionada.cita.codigo }}</RouterLink>
+            · {{ formatearFecha(seleccionada.cita.fecha) }} {{ seleccionada.cita.horaInicio }}
+          </dd>
         </template>
       </dl>
     </BaseModal>
+
+    <CitaForm v-model="mostrarConversion" :solicitud="seleccionada" @saved="cargar()" />
 
     <ConfirmDialog
       v-model="mostrarRechazo"
@@ -105,6 +111,7 @@
 
 <script setup>
 import { onMounted, ref } from 'vue';
+import CitaForm from '@/components/admin/CitaForm.vue';
 import BaseModal from '@/components/common/BaseModal.vue';
 import ConfirmDialog from '@/components/common/ConfirmDialog.vue';
 import FormField from '@/components/common/FormField.vue';
@@ -122,11 +129,17 @@ const { items, meta, cargando, filtros, cargar, buscar } = useListado(solicitude
 const seleccionada = ref(null);
 const mostrarDetalle = ref(false);
 const mostrarRechazo = ref(false);
+const mostrarConversion = ref(false);
 const procesando = ref(false);
 
 function verDetalle(solicitud) {
   seleccionada.value = solicitud;
   mostrarDetalle.value = true;
+}
+
+function abrirConversion(solicitud) {
+  seleccionada.value = solicitud;
+  mostrarConversion.value = true;
 }
 
 function abrirRechazo(solicitud) {
