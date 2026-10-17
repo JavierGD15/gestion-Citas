@@ -21,3 +21,9 @@ export const TIPOS_MATERIAL = Object.freeze({
   EJERCICIO: 'Ejercicio',
   OTRO: 'Otro'
 });
+
+export const CATEGORIAS_CORPORATIVO = Object.freeze({
+  CAPACITACION: 'Capacitación',
+  ESCUELA_PADRES: 'Escuela para padres',
+  ACTIVIDAD: 'Actividad'
+});
