@@ -55,7 +55,10 @@
               <td>{{ cita.servicio?.nombre }}</td>
               <td v-if="!esProfesional">{{ cita.profesional?.nombreCompleto }}</td>
               <td class="text-right">{{ formatearMoneda(cita.precio) }}</td>
-              <td v-if="puedeGestionar"><StatusBadge :estado="cita.finanzas.estadoFinanciero" :etiquetas="ESTADOS_FINANCIEROS" financiero /></td>
+              <td v-if="puedeGestionar">
+                <StatusBadge v-if="cita.estado !== 'CANCELADA'" :estado="cita.finanzas.estadoFinanciero" :etiquetas="ESTADOS_FINANCIEROS" financiero />
+                <span v-else class="text-muted">—</span>
+              </td>
               <td><StatusBadge :estado="cita.estado" :etiquetas="ESTADOS_CITA" /></td>
             </tr>
             <tr v-if="!cargando && items.length === 0">
