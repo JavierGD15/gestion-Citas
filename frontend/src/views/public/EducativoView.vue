@@ -4,7 +4,7 @@
     <p class="text-muted">Publicaciones informativas para pacientes, familias y comunidad.</p>
     <div class="publicaciones">
       <article v-for="item in publicaciones" :key="item._id" class="card publicacion">
-        <img v-if="item.imagen" :src="item.imagen" :alt="item.titulo" loading="lazy" />
+        <img v-if="item.imagen" :src="item.imagen" :alt="item.titulo" />
         <div class="publicacion-body">
           <small class="text-muted">{{ formatearFechaLarga(item.fechaPublicacion || item.createdAt) }}</small>
           <h2>{{ item.titulo }}</h2>

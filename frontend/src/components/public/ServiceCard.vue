@@ -1,6 +1,6 @@
 <template>
   <article class="service-card">
-    <img v-if="servicio.imagen" :src="servicio.imagen" :alt="servicio.nombre" loading="lazy" />
+    <img v-if="servicio.imagen" :src="servicio.imagen" :alt="servicio.nombre" />
     <div v-else class="service-placeholder">{{ servicio.nombre.charAt(0) }}</div>
     <div class="service-body">
       <h3>{{ servicio.nombre }}</h3>
