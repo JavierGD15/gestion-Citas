@@ -1,6 +1,6 @@
 import { ROLES, TODOS_LOS_ROLES } from '@/utils/roles';
 
-const { ADMINISTRADOR, RECEPCIONISTA } = ROLES;
+const { ADMINISTRADOR, RECEPCIONISTA, PROFESIONAL } = ROLES;
 
 export default [
   { titulo: 'Panel', ruta: 'admin-dashboard', roles: TODOS_LOS_ROLES },
@@ -9,6 +9,7 @@ export default [
   { titulo: 'Solicitudes', ruta: 'admin-solicitudes', roles: [ADMINISTRADOR, RECEPCIONISTA] },
   { titulo: 'Pacientes', ruta: 'admin-pacientes', roles: TODOS_LOS_ROLES },
   { titulo: 'Responsables', ruta: 'admin-responsables', roles: [ADMINISTRADOR, RECEPCIONISTA] },
+  { titulo: 'Materiales', ruta: 'admin-materiales', roles: [ADMINISTRADOR, PROFESIONAL] },
   { titulo: 'Profesionales', ruta: 'admin-profesionales', roles: [ADMINISTRADOR, RECEPCIONISTA] },
   { titulo: 'Servicios', ruta: 'admin-servicios', roles: [ADMINISTRADOR, RECEPCIONISTA] },
   { titulo: 'Usuarios', ruta: 'admin-usuarios', roles: [ADMINISTRADOR] },
