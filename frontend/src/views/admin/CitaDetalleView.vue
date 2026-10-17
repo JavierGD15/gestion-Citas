@@ -40,6 +40,13 @@
           <dd>{{ cita.horaInicio }} – {{ cita.horaFin }} ({{ cita.duracionMinutos }} min)</dd>
           <dt>Precio registrado</dt>
           <dd>{{ formatearMoneda(cita.precio) }}</dd>
+          <template v-if="cita.finanzas && puedeGestionar">
+            <dt>Estado financiero</dt>
+            <dd>
+              <StatusBadge :estado="cita.finanzas.estadoFinanciero" :etiquetas="ESTADOS_FINANCIEROS" financiero />
+              <span class="text-muted"> Saldo {{ formatearMoneda(cita.finanzas.saldo) }}</span>
+            </dd>
+          </template>
           <dt>Creada</dt>
           <dd>{{ formatearFechaHora(cita.createdAt) }} por {{ cita.creadoPor?.nombres }} {{ cita.creadoPor?.apellidos }}</dd>
           <template v-if="cita.motivoCancelacion">
@@ -69,6 +76,8 @@
         </ol>
       </div>
     </div>
+
+    <CitaPagos v-if="puedeGestionar" :key="cita._id" :cita="cita" class="pagos" @changed="cargar" />
 
     <CitaForm v-model="mostrarReprogramar" :cita="cita" @saved="cargar" />
 
@@ -100,6 +109,7 @@
 import { computed, onMounted, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import CitaForm from '@/components/admin/CitaForm.vue';
+import CitaPagos from '@/components/admin/CitaPagos.vue';
 import BaseModal from '@/components/common/BaseModal.vue';
 import ConfirmDialog from '@/components/common/ConfirmDialog.vue';
 import FormField from '@/components/common/FormField.vue';
@@ -107,7 +117,7 @@ import StatusBadge from '@/components/common/StatusBadge.vue';
 import citasService from '@/services/citas.service';
 import { useAuthStore } from '@/stores/auth';
 import { useNotificationsStore } from '@/stores/notifications';
-import { ESTADOS_CITA } from '@/utils/catalogos';
+import { ESTADOS_CITA, ESTADOS_FINANCIEROS } from '@/utils/catalogos';
 import { mensajeError } from '@/utils/errors';
 import { formatearFechaHora, formatearFechaLarga, formatearMoneda } from '@/utils/format';
 import { ROLES } from '@/utils/roles';
@@ -178,6 +188,10 @@ onMounted(cargar);
 </script>
 
 <style scoped>
+.pagos {
+  margin-top: 1rem;
+}
+
 .subtitulo {
   display: flex;
   align-items: center;

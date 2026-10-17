@@ -27,3 +27,20 @@ export const CATEGORIAS_CORPORATIVO = Object.freeze({
   ESCUELA_PADRES: 'Escuela para padres',
   ACTIVIDAD: 'Actividad'
 });
+
+export const METODOS_PAGO = Object.freeze({
+  EFECTIVO: 'Efectivo',
+  TRANSFERENCIA: 'Transferencia',
+  TARJETA: 'Tarjeta'
+});
+
+export const ESTADOS_PAGO = Object.freeze({
+  REGISTRADO: 'Registrado',
+  ANULADO: 'Anulado'
+});
+
+export const ESTADOS_FINANCIEROS = Object.freeze({
+  PENDIENTE: 'Pendiente de pago',
+  PARCIAL: 'Pago parcial',
+  PAGADO: 'Pagado'
+});
