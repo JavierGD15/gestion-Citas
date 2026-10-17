@@ -17,7 +17,8 @@ const routes = [
       { path: 'educativo', name: 'educativo', component: () => import('@/views/public/EducativoView.vue') },
       { path: 'corporativo', name: 'corporativo', component: () => import('@/views/public/CorporativoView.vue') },
       { path: 'horarios', name: 'horarios', component: () => import('@/views/public/HorariosView.vue') },
-      { path: 'contacto', name: 'contacto', component: () => import('@/views/public/ContactoView.vue') }
+      { path: 'contacto', name: 'contacto', component: () => import('@/views/public/ContactoView.vue') },
+      { path: 'solicitar-cita', name: 'solicitar-cita', component: () => import('@/views/public/SolicitarCitaView.vue') }
     ]
   },
   {
@@ -32,6 +33,7 @@ const routes = [
     children: [
       { path: '', name: 'admin-dashboard', component: () => import('@/views/admin/DashboardView.vue'), meta: { roles: TODOS_LOS_ROLES } },
       { path: 'cuenta', name: 'admin-cuenta', component: () => import('@/views/admin/CuentaView.vue'), meta: { roles: TODOS_LOS_ROLES } },
+      { path: 'solicitudes', name: 'admin-solicitudes', component: () => import('@/views/admin/SolicitudesView.vue'), meta: { roles: [ADMINISTRADOR, RECEPCIONISTA] } },
       { path: 'pacientes', name: 'admin-pacientes', component: () => import('@/views/admin/PacientesView.vue'), meta: { roles: [ADMINISTRADOR, RECEPCIONISTA] } },
       { path: 'pacientes/:id', name: 'admin-paciente-detalle', component: () => import('@/views/admin/PacienteDetalleView.vue'), meta: { roles: [ADMINISTRADOR, RECEPCIONISTA] } },
       { path: 'responsables', name: 'admin-responsables', component: () => import('@/views/admin/ResponsablesView.vue'), meta: { roles: [ADMINISTRADOR, RECEPCIONISTA] } },
