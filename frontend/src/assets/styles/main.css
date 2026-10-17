@@ -423,3 +423,21 @@ textarea:focus {
     margin-bottom: 0.5rem;
   }
 }
+
+@media print {
+  .admin-sidebar,
+  .admin-header,
+  .sidebar-backdrop,
+  .toasts {
+    display: none !important;
+  }
+
+  .admin-layout {
+    display: block !important;
+    background: #fff !important;
+  }
+
+  .admin-main {
+    padding: 0 !important;
+  }
+}

@@ -11,3 +11,5 @@ export { default as SolicitudCita } from './SolicitudCita.js';
 export { default as Cita } from './Cita.js';
 export { default as Material } from './Material.js';
 export { default as AsignacionMaterial } from './AsignacionMaterial.js';
+export { default as Caja } from './Caja.js';
+export { default as Pago } from './Pago.js';

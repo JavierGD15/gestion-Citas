@@ -40,6 +40,7 @@
               <th>Servicio</th>
               <th v-if="!esProfesional">Profesional</th>
               <th class="text-right">Precio</th>
+              <th v-if="puedeGestionar">Pago</th>
               <th>Estado</th>
             </tr>
           </thead>
@@ -54,10 +55,11 @@
               <td>{{ cita.servicio?.nombre }}</td>
               <td v-if="!esProfesional">{{ cita.profesional?.nombreCompleto }}</td>
               <td class="text-right">{{ formatearMoneda(cita.precio) }}</td>
+              <td v-if="puedeGestionar"><StatusBadge :estado="cita.finanzas.estadoFinanciero" :etiquetas="ESTADOS_FINANCIEROS" financiero /></td>
               <td><StatusBadge :estado="cita.estado" :etiquetas="ESTADOS_CITA" /></td>
             </tr>
             <tr v-if="!cargando && items.length === 0">
-              <td :colspan="esProfesional ? 7 : 8" class="text-muted">No hay citas para los filtros seleccionados</td>
+              <td :colspan="esProfesional ? 7 : 9" class="text-muted">No hay citas para los filtros seleccionados</td>
             </tr>
           </tbody>
         </table>
@@ -80,7 +82,7 @@ import { useListado } from '@/composables/useListado';
 import citasService from '@/services/citas.service';
 import profesionalesService from '@/services/profesionales.service';
 import { useAuthStore } from '@/stores/auth';
-import { ESTADOS_CITA } from '@/utils/catalogos';
+import { ESTADOS_CITA, ESTADOS_FINANCIEROS } from '@/utils/catalogos';
 import { fechaISO, formatearFecha, formatearMoneda } from '@/utils/format';
 import { ROLES } from '@/utils/roles';
 
