@@ -39,6 +39,8 @@
       </dl>
     </div>
 
+    <PacienteResponsables v-if="tabActiva === 'responsables'" :paciente="paciente" :editable="puedeEditar" />
+
     <PacienteForm v-model="mostrarFormulario" :paciente="paciente" @saved="cargar" />
   </section>
 </template>
@@ -47,6 +49,7 @@
 import { computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import PacienteForm from '@/components/admin/PacienteForm.vue';
+import PacienteResponsables from '@/components/admin/PacienteResponsables.vue';
 import AvatarImg from '@/components/common/AvatarImg.vue';
 import StatusBadge from '@/components/common/StatusBadge.vue';
 import pacientesService from '@/services/pacientes.service';
@@ -68,7 +71,10 @@ const tabActiva = ref('datos');
 
 const puedeEditar = computed(() => auth.tieneRol(ROLES.ADMINISTRADOR, ROLES.RECEPCIONISTA));
 
-const tabs = computed(() => [{ id: 'datos', titulo: 'Datos generales' }]);
+const tabs = computed(() => [
+  { id: 'datos', titulo: 'Datos generales' },
+  { id: 'responsables', titulo: 'Responsables' }
+]);
 
 async function cargar() {
   try {
