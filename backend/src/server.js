@@ -1,14 +1,12 @@
 import app from './app.js';
-import env from './config/env.js';
+import env, { validarEntorno } from './config/env.js';
 import { connectDB } from './config/db.js';
 import { asegurarContenidoBase } from './services/contenido.service.js';
 import { asegurarHorariosBase } from './services/horario.service.js';
 
 async function start() {
   try {
-    if (!env.jwtSecret) {
-      throw new Error('La variable JWT_SECRET es obligatoria');
-    }
+    validarEntorno();
     await connectDB();
     console.log('MongoDB conectado');
     await Promise.all([asegurarContenidoBase(), asegurarHorariosBase()]);
