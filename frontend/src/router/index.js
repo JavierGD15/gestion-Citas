@@ -34,6 +34,7 @@ const routes = [
       { path: '', name: 'admin-dashboard', component: () => import('@/views/admin/DashboardView.vue'), meta: { roles: TODOS_LOS_ROLES } },
       { path: 'cuenta', name: 'admin-cuenta', component: () => import('@/views/admin/CuentaView.vue'), meta: { roles: TODOS_LOS_ROLES } },
       { path: 'solicitudes', name: 'admin-solicitudes', component: () => import('@/views/admin/SolicitudesView.vue'), meta: { roles: [ADMINISTRADOR, RECEPCIONISTA] } },
+      { path: 'calendario', name: 'admin-calendario', component: () => import('@/views/admin/CalendarioView.vue'), meta: { roles: TODOS_LOS_ROLES } },
       { path: 'citas', name: 'admin-citas', component: () => import('@/views/admin/CitasView.vue'), meta: { roles: TODOS_LOS_ROLES } },
       { path: 'citas/:id', name: 'admin-cita-detalle', component: () => import('@/views/admin/CitaDetalleView.vue'), meta: { roles: TODOS_LOS_ROLES } },
       { path: 'pacientes', name: 'admin-pacientes', component: () => import('@/views/admin/PacientesView.vue'), meta: { roles: TODOS_LOS_ROLES } },
