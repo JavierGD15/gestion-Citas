@@ -1,7 +1,7 @@
 import Servicio from '../models/Servicio.js';
 import ApiError from '../utils/ApiError.js';
 import { toCents } from '../utils/money.js';
-import { escapeRegex } from '../utils/pagination.js';
+import { searchRegex } from '../utils/pagination.js';
 import { ESTADOS } from '../constants/index.js';
 
 function mapearDatos(datos) {
@@ -25,7 +25,7 @@ export async function listar(query, usuario) {
     filtro.estado = query.estado;
   }
   if (query.q) {
-    filtro.nombre = new RegExp(escapeRegex(query.q), 'i');
+    filtro.nombre = searchRegex(query.q);
   }
   return Servicio.find(filtro).sort({ nombre: 1 });
 }

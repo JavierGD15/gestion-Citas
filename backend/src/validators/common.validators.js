@@ -1,5 +1,6 @@
-import { body, param } from 'express-validator';
+import { body, param, query } from 'express-validator';
 import { isValidMoney } from '../utils/money.js';
+import { esFechaValida, hoyISO } from '../utils/fechas.js';
 
 export const PASSWORD_MENSAJE = 'La contraseña debe tener al menos 8 caracteres e incluir letras y números';
 
@@ -45,4 +46,24 @@ export function moneyRule(campo, { min = 0, mensaje } = {}) {
     }
     return true;
   });
+}
+
+export function fechaRule(campo, { pasadaOHoy = false } = {}) {
+  return body(campo).custom((valor) => {
+    if (!esFechaValida(valor)) {
+      throw new Error('Ingrese una fecha válida con formato AAAA-MM-DD');
+    }
+    if (pasadaOHoy && valor > hoyISO()) {
+      throw new Error('La fecha no puede ser futura');
+    }
+    return true;
+  });
+}
+
+export function busquedaRules() {
+  return [
+    query('q').optional().isString().trim().isLength({ max: 80 }).withMessage('Búsqueda demasiado larga'),
+    query('page').optional().isInt({ min: 1 }).withMessage('Página no válida'),
+    query('limit').optional().isInt({ min: 1, max: 100 }).withMessage('Límite no válido')
+  ];
 }

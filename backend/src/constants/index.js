@@ -42,3 +42,11 @@ export const DIAS_SEMANA = Object.freeze([
 ]);
 
 export const HORA_REGEX = /^([01]\d|2[0-3]):[0-5]\d$/;
+
+export const SEXOS = Object.freeze({
+  MASCULINO: 'MASCULINO',
+  FEMENINO: 'FEMENINO',
+  OTRO: 'OTRO'
+});
+
+export const MAYORIA_EDAD = 18;
