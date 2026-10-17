@@ -4,7 +4,7 @@ import AdminLayout from '@/layouts/AdminLayout.vue';
 import { useAuthStore } from '@/stores/auth';
 import { ROLES, TODOS_LOS_ROLES } from '@/utils/roles';
 
-const { ADMINISTRADOR, RECEPCIONISTA } = ROLES;
+const { ADMINISTRADOR, RECEPCIONISTA, PROFESIONAL } = ROLES;
 
 const routes = [
   {
@@ -41,6 +41,7 @@ const routes = [
       { path: 'pacientes/:id', name: 'admin-paciente-detalle', component: () => import('@/views/admin/PacienteDetalleView.vue'), meta: { roles: TODOS_LOS_ROLES } },
       { path: 'responsables', name: 'admin-responsables', component: () => import('@/views/admin/ResponsablesView.vue'), meta: { roles: [ADMINISTRADOR, RECEPCIONISTA] } },
       { path: 'profesionales', name: 'admin-profesionales', component: () => import('@/views/admin/ProfesionalesView.vue'), meta: { roles: [ADMINISTRADOR, RECEPCIONISTA] } },
+      { path: 'materiales', name: 'admin-materiales', component: () => import('@/views/admin/MaterialesView.vue'), meta: { roles: [ADMINISTRADOR, PROFESIONAL] } },
       { path: 'servicios', name: 'admin-servicios', component: () => import('@/views/admin/ServiciosView.vue'), meta: { roles: [ADMINISTRADOR, RECEPCIONISTA] } },
       { path: 'usuarios', name: 'admin-usuarios', component: () => import('@/views/admin/UsuariosView.vue'), meta: { roles: [ADMINISTRADOR] } }
     ]

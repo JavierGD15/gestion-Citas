@@ -72,3 +72,12 @@ export const TRANSICIONES_CITA = Object.freeze({
   COMPLETADA: [],
   CANCELADA: []
 });
+
+export const TIPOS_MATERIAL = Object.freeze({
+  DOCUMENTO: 'DOCUMENTO',
+  VIDEO: 'VIDEO',
+  AUDIO: 'AUDIO',
+  ENLACE: 'ENLACE',
+  EJERCICIO: 'EJERCICIO',
+  OTRO: 'OTRO'
+});
