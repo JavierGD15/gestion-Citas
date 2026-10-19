@@ -91,7 +91,7 @@ gestion-Citas/
 docker run -d --name sigca-mongo -p 27017:27017 mongo:7
 ```
 
-**Opción 3: MongoDB Atlas.** Cree un clúster gratuito, un usuario de base de datos y permita su IP. Copie la cadena de conexión en `MONGODB_URI`, por ejemplo `mongodb+srv://usuario:clave@cluster.mongodb.net/sigca`.
+**Opción 3: MongoDB Atlas.** Cree un clúster gratuito, un usuario de base de datos y permita su IP. En la opción **Connect → Drivers** copie la cadena de conexión que muestra Atlas (inicia con `mongodb+srv://`), reemplace el usuario y la contraseña por los suyos, agregue `/sigca` como nombre de la base de datos y colóquela en `MONGODB_URI` dentro de `backend/.env`. Esa cadena contiene credenciales: nunca la suba al repositorio.
 
 ## Variables de entorno
 
