@@ -72,7 +72,8 @@ gestion-Citas/
     ├── evidencias/        Capturas de pantalla
     ├── fases.md           Plan de trabajo por fases y Pull Requests
     ├── minutas/           Minuta del avance 1
-    └── postman/           Colección de Postman
+    ├── postman/           Colección de Postman
+    └── pruebas/           Informe de pruebas funcionales con capturas
 ```
 
 ## Requisitos de instalación
@@ -310,6 +311,8 @@ npx newman run docs/postman/SIGCA.postman_collection.json
 ```
 
 ## Evidencias
+
+El informe completo de pruebas funcionales, con 117 capturas de cada funcionalidad, reglas de negocio y permisos por rol, está en [docs/pruebas/README.md](docs/pruebas/README.md).
 
 | Portal público | |
 | --- | --- |

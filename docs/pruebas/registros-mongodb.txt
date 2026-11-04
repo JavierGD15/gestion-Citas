@@ -1,0 +1,20 @@
+Base de datos: sigca
+Colecciones: asignacionesMateriales, cajas, citas, contadores, contenidoInstitucional, horarios, materiales, mensajesContacto, pacientes, pagos, profesionales, responsables, servicios, solicitudesCita, usuarios
+
+usuarios.password del admin (hash bcrypt, nunca texto plano): $2b$12$…
+
+citas CIT-000017: {"estado":"CONFIRMADA","fecha":"2026-11-10","horaInicio":"09:00","horaFin":"10:00","precioCentavos":25000,"pagosRegistradosCentavos":25000}
+
+pagos de CIT-000017:
+   {"comprobante":"REC-2026-000011","montoCentavos":10000,"metodo":"EFECTIVO","estado":"REGISTRADO","caja":"6aeaa95e049d64bcd8afa432","registradoPor":"6aeaa6b49aa3657ca6d486bb","fechaPago":"2026-11-04T03:41:41.315Z"}
+   {"comprobante":"REC-2026-000012","montoCentavos":15000,"metodo":"TRANSFERENCIA","estado":"REGISTRADO","caja":"6aeaa95e049d64bcd8afa432","registradoPor":"6aeaa6b49aa3657ca6d486bb","fechaPago":"2026-11-04T03:42:16.193Z"}
+
+cajas CAJ-00004: {"estado":"CERRADA","montoInicialCentavos":20000,"totalEfectivoCentavos":10000,"totalTransferenciaCentavos":15000,"totalTarjetaCentavos":5000,"totalIngresosCentavos":30000,"efectivoEsperadoCentavos":30000,"efectivoContadoCentavos":29000,"diferenciaCentavos":-1000,"cantidadAnulados":1,"fechaCierre":"2026-11-04T03:44:57.134Z"}
+
+pago anulado REC-2026-000013: {"estado":"ANULADO","motivoAnulacion":"La tarjeta fue rechazada por el banco después del registro.","anuladoPor":"6aeaa6b49aa3657ca6d486bb","fechaAnulacion":"2026-11-04T03:43:15.249Z"}
+
+solicitudesCita Carlos Estrada: {"estado":"ATENDIDA","cita":"6aeaa8e5049d64bcd8afa3d4"}
+
+paciente desactivado (eliminación lógica) PAC-00010: {"estado":"INACTIVO","existeEnBD":true}
+
+Conteos: {"usuarios":8,"pacientes":11,"responsables":6,"servicios":6,"citas":18,"solicitudesCita":6,"materiales":6,"asignacionesMateriales":8,"pagos":14,"cajas":4,"mensajesContacto":4}

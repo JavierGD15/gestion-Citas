@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import PublicLayout from '@/layouts/PublicLayout.vue';
 import AdminLayout from '@/layouts/AdminLayout.vue';
 import { useAuthStore } from '@/stores/auth';
+import { useNotificationsStore } from '@/stores/notifications';
 import { ROLES, TODOS_LOS_ROLES } from '@/utils/roles';
 
 const { ADMINISTRADOR, RECEPCIONISTA, PROFESIONAL } = ROLES;
@@ -81,6 +82,7 @@ router.beforeEach(async (to) => {
   }
 
   if (to.meta.roles && !auth.tieneRol(...to.meta.roles)) {
+    useNotificationsStore().error('No tiene permisos para acceder a esa sección');
     return { name: 'admin-dashboard' };
   }
 
