@@ -12,6 +12,8 @@ export default [
   { titulo: 'Materiales', ruta: 'admin-materiales', roles: [ADMINISTRADOR, PROFESIONAL] },
   { titulo: 'Profesionales', ruta: 'admin-profesionales', roles: [ADMINISTRADOR, RECEPCIONISTA] },
   { titulo: 'Servicios', ruta: 'admin-servicios', roles: [ADMINISTRADOR, RECEPCIONISTA] },
+  { titulo: 'Contenido del portal', ruta: 'admin-contenido', roles: [ADMINISTRADOR] },
+  { titulo: 'Mensajes', ruta: 'admin-mensajes', roles: [ADMINISTRADOR] },
   { titulo: 'Usuarios', ruta: 'admin-usuarios', roles: [ADMINISTRADOR] },
   { titulo: 'Mi cuenta', ruta: 'admin-cuenta', roles: TODOS_LOS_ROLES }
 ];
