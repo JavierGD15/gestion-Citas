@@ -35,7 +35,7 @@
         <h2>Carrusel de inicio</h2>
         <button type="button" class="btn btn-secondary btn-sm" :disabled="general.datos.carrusel.length >= 12" @click="agregarSlide">Agregar imagen</button>
       </div>
-      <p v-if="general.datos.carrusel.length < 5" class="alert alert-warning">Se recomienda configurar al menos 5 imágenes en el carrusel.</p>
+      <p v-if="general.datos.carrusel.length < 5" class="alert alert-warning">El carrusel debe tener al menos 5 imágenes para poder guardar.</p>
       <div v-for="(slide, indice) in general.datos.carrusel" :key="indice" class="slide-row">
         <img v-if="slide.imagen" :src="slide.imagen" alt="" class="slide-preview" />
         <div class="form-grid slide-campos">
@@ -218,6 +218,10 @@ async function guardar(item, datos) {
 function guardarGeneral() {
   if (!general.value.datos.nombreCentro || general.value.datos.nombreCentro.length < 3) {
     notifications.error('El nombre del centro debe tener al menos 3 caracteres');
+    return;
+  }
+  if (general.value.datos.carrusel.length < 5) {
+    notifications.error('El carrusel debe tener al menos 5 imágenes');
     return;
   }
   if (general.value.datos.carrusel.some((slide) => !/^https?:\/\/\S+$/.test(slide.imagen))) {

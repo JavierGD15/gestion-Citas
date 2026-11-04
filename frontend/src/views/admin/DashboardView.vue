@@ -2,7 +2,7 @@
   <section>
     <div class="page-header">
       <div>
-        <h1>Bienvenido, {{ auth.usuario?.nombres }}</h1>
+        <h1>Hola, {{ auth.usuario?.nombres }}</h1>
         <p class="text-muted">{{ ETIQUETAS_ROL[auth.rol] }} · {{ formatearFechaLarga(hoy) }}</p>
       </div>
     </div>

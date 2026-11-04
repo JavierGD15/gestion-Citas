@@ -54,13 +54,14 @@
             </td>
             <td>
               <button
-                v-if="pago.estado === 'REGISTRADO' && pago.caja?.estado === 'ABIERTA'"
+                v-if="pago.estado === 'REGISTRADO' && pago.caja?.estado === 'ABIERTA' && puedeAnular(pago)"
                 type="button"
                 class="btn btn-danger btn-sm"
                 @click="abrirAnulacion(pago)"
               >
                 Anular
               </button>
+              <small v-else-if="pago.estado === 'REGISTRADO' && pago.caja?.estado === 'ABIERTA'" class="text-muted">Caja de otro usuario</small>
               <small v-else-if="pago.estado === 'REGISTRADO'" class="text-muted">Caja cerrada</small>
             </td>
           </tr>
@@ -94,10 +95,12 @@ import PagoForm from '@/components/admin/PagoForm.vue';
 import ConfirmDialog from '@/components/common/ConfirmDialog.vue';
 import StatusBadge from '@/components/common/StatusBadge.vue';
 import pagosService from '@/services/pagos.service';
+import { useAuthStore } from '@/stores/auth';
 import { useCajaStore } from '@/stores/caja';
 import { useNotificationsStore } from '@/stores/notifications';
 import { ESTADOS_FINANCIEROS, ESTADOS_PAGO, METODOS_PAGO } from '@/utils/catalogos';
 import { mensajeError } from '@/utils/errors';
+import { ROLES } from '@/utils/roles';
 import { formatearFechaHora, formatearMoneda } from '@/utils/format';
 
 const props = defineProps({
@@ -105,8 +108,15 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['changed']);
+const auth = useAuthStore();
 const caja = useCajaStore();
 const notifications = useNotificationsStore();
+
+// Igual que en el backend: el administrador anula cualquier pago; la recepcionista solo los de su caja.
+function puedeAnular(pago) {
+  const duenoCaja = pago.caja?.usuario?._id || pago.caja?.usuario;
+  return auth.rol === ROLES.ADMINISTRADOR || String(duenoCaja) === String(auth.usuario?._id);
+}
 
 const pagos = ref([]);
 const resumen = ref(null);

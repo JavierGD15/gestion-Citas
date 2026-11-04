@@ -10,7 +10,7 @@
           <h3>{{ item.titulo }}</h3>
           <p>{{ item.descripcion }}</p>
           <div v-if="imagenesDe(item).length" class="galeria">
-            <img v-for="(imagen, indice) in imagenesDe(item)" :key="indice" :src="imagen" :alt="`${item.titulo} ${indice + 1}`" loading="lazy" />
+            <img v-for="(imagen, indice) in imagenesDe(item)" :key="indice" :src="imagen" :alt="`${item.titulo} ${indice + 1}`" />
           </div>
         </article>
       </div>

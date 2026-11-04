@@ -39,9 +39,16 @@ export function authorize(...roles) {
   };
 }
 
+// En rutas públicas un token vencido o inválido no debe bloquear la consulta:
+// se atiende como visitante anónimo.
 export async function optionalAuthenticate(req, res, next) {
   if (!req.headers.authorization) {
     return next();
   }
-  return authenticate(req, res, next);
+  try {
+    await authenticate(req, res, () => {});
+  } catch {
+    req.user = undefined;
+  }
+  return next();
 }

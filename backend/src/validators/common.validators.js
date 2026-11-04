@@ -8,8 +8,8 @@ export function mongoIdParam(nombre = 'id') {
   return param(nombre).isMongoId().withMessage('El identificador no es válido');
 }
 
-export function passwordRule(campo = 'password') {
-  return body(campo)
+export function passwordRule(campo = 'password', cadena = body(campo)) {
+  return cadena
     .isString()
     .withMessage(PASSWORD_MENSAJE)
     .isLength({ min: 8, max: 72 })
@@ -20,8 +20,8 @@ export function passwordRule(campo = 'password') {
     .withMessage(PASSWORD_MENSAJE);
 }
 
-export function correoRule(campo = 'correo') {
-  return body(campo)
+export function correoRule(campo = 'correo', cadena = body(campo)) {
+  return cadena
     .trim()
     .isEmail()
     .withMessage('El correo electrónico no es válido')

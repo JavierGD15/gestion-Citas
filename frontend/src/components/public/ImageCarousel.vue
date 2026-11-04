@@ -2,7 +2,7 @@
   <div class="carousel" @mouseenter="pausar" @mouseleave="reanudar">
     <div class="carousel-track" :style="{ transform: `translateX(-${actual * 100}%)` }">
       <div v-for="(slide, indice) in slides" :key="indice" class="carousel-slide">
-        <img v-if="slide.imagen" :src="slide.imagen" :alt="slide.titulo || `Imagen ${indice + 1}`" :loading="indice === 0 ? 'eager' : 'lazy'" />
+        <img v-if="slide.imagen" :src="slide.imagen" :alt="slide.titulo || `Imagen ${indice + 1}`" />
         <div v-else class="carousel-placeholder"></div>
         <div v-if="slide.titulo || slide.descripcion" class="carousel-caption">
           <h2 v-if="slide.titulo">{{ slide.titulo }}</h2>

@@ -1,8 +1,10 @@
-const moneda = new Intl.NumberFormat('es-GT', { style: 'currency', currency: 'GTQ', minimumFractionDigits: 2 });
+const moneda = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const TIME_ZONE = 'America/Guatemala';
 
+// Formato Q1,000.00 / -Q10.00
 export function formatearMoneda(valor) {
-  return moneda.format(Number(valor) || 0);
+  const numero = Number(valor) || 0;
+  return `${numero < 0 ? '-' : ''}Q${moneda.format(Math.abs(numero))}`;
 }
 
 export function formatearFecha(valor) {

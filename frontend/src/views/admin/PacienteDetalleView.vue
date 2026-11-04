@@ -51,7 +51,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import PacienteForm from '@/components/admin/PacienteForm.vue';
 import PacienteResponsables from '@/components/admin/PacienteResponsables.vue';
@@ -99,6 +99,7 @@ async function cargar() {
 }
 
 onMounted(cargar);
+watch(() => route.params.id, (id) => id && cargar());
 </script>
 
 <style scoped>

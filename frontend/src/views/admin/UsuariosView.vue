@@ -79,7 +79,13 @@
         <FormField id="correo" label="Correo electrónico" :error="errores.correo" required>
           <input id="correo" v-model.trim="form.correo" type="email" maxlength="120" />
         </FormField>
-        <FormField id="rol" label="Rol" :error="errores.rol" required>
+        <FormField
+          id="rol"
+          label="Rol"
+          :error="errores.rol"
+          :hint="form.rol === 'PROFESIONAL' ? 'Luego vincule este usuario a su perfil en el módulo Profesionales para que pueda ver sus citas' : ''"
+          required
+        >
           <select id="rol" v-model="form.rol" :disabled="editando && editando._id === auth.usuario?._id">
             <option value="">Seleccione</option>
             <option v-for="(etiqueta, valor) in ETIQUETAS_ROL" :key="valor" :value="valor">{{ etiqueta }}</option>

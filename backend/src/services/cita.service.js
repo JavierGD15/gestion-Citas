@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import Cita from '../models/Cita.js';
 import Contador from '../models/Contador.js';
 import Horario from '../models/Horario.js';
@@ -20,6 +21,32 @@ export const POPULATE_CITA = [
   { path: 'creadoPor', select: 'nombres apellidos' },
   { path: 'historial.usuario', select: 'nombres apellidos' }
 ];
+
+const BLOQUEO_AGENDA_MS = 10000;
+const INTENTOS_BLOQUEO = 40;
+const esperar = (ms) => new Promise((resolver) => setTimeout(resolver, ms));
+
+// Serializa la programación de citas de un mismo profesional para que dos solicitudes
+// simultáneas no puedan validar el mismo horario libre y crear citas traslapadas (RN-01).
+// El bloqueo vive en MongoDB y expira solo si el proceso falla antes de liberarlo.
+async function conAgendaBloqueada(profesionalId, operacion) {
+  const token = new mongoose.Types.ObjectId();
+  for (let intento = 0; intento < INTENTOS_BLOQUEO; intento += 1) {
+    const { modifiedCount } = await Profesional.updateOne(
+      { _id: profesionalId, $or: [{ bloqueoAgenda: null }, { 'bloqueoAgenda.expira': { $lt: new Date() } }] },
+      { bloqueoAgenda: { token, expira: new Date(Date.now() + BLOQUEO_AGENDA_MS) } }
+    );
+    if (modifiedCount === 1) {
+      try {
+        return await operacion();
+      } finally {
+        await Profesional.updateOne({ _id: profesionalId, 'bloqueoAgenda.token': token }, { bloqueoAgenda: null });
+      }
+    }
+    await esperar(50);
+  }
+  throw new ApiError(409, 'La agenda del profesional se está actualizando. Intente de nuevo');
+}
 
 async function profesionalDelUsuario(usuario) {
   if (usuario.rol !== ROLES.PROFESIONAL) {
@@ -114,34 +141,36 @@ export async function crear(datos, usuario, opciones = {}) {
 
   const profesional = await obtenerProfesionalActivo(datos.profesional);
 
-  const horario = await calcularHorario({
-    fecha: datos.fecha,
-    horaInicio: datos.horaInicio,
-    duracionMinutos: servicio.duracionMinutos,
-    profesional: profesional._id,
-    paciente: paciente._id
-  });
+  const cita = await conAgendaBloqueada(profesional._id, async () => {
+    const horario = await calcularHorario({
+      fecha: datos.fecha,
+      horaInicio: datos.horaInicio,
+      duracionMinutos: servicio.duracionMinutos,
+      profesional: profesional._id,
+      paciente: paciente._id
+    });
 
-  const secuencia = await Contador.siguiente('cita');
-  const cita = await Cita.create({
-    codigo: `CIT-${String(secuencia).padStart(6, '0')}`,
-    paciente: paciente._id,
-    servicio: servicio._id,
-    profesional: profesional._id,
-    ...horario,
-    duracionMinutos: servicio.duracionMinutos,
-    precioCentavos: servicio.precioCentavos,
-    observaciones: datos.observaciones || '',
-    solicitud: opciones.solicitud || null,
-    creadoPor: usuario._id,
-    historial: [
-      {
-        accion: 'PROGRAMADA',
-        estado: ESTADOS_CITA.PENDIENTE,
-        detalle: `${horario.fecha} ${horario.horaInicio}`,
-        usuario: usuario._id
-      }
-    ]
+    const secuencia = await Contador.siguiente('cita');
+    return Cita.create({
+      codigo: `CIT-${String(secuencia).padStart(6, '0')}`,
+      paciente: paciente._id,
+      servicio: servicio._id,
+      profesional: profesional._id,
+      ...horario,
+      duracionMinutos: servicio.duracionMinutos,
+      precioCentavos: servicio.precioCentavos,
+      observaciones: datos.observaciones || '',
+      solicitud: opciones.solicitud || null,
+      creadoPor: usuario._id,
+      historial: [
+        {
+          accion: 'PROGRAMADA',
+          estado: ESTADOS_CITA.PENDIENTE,
+          detalle: `${horario.fecha} ${horario.horaInicio}`,
+          usuario: usuario._id
+        }
+      ]
+    });
   });
 
   return obtener(cita._id, usuario);
@@ -239,22 +268,30 @@ export async function actualizar(id, datos, usuario) {
     const profesional = await obtenerProfesionalActivo(profesionalId);
     const anterior = `${cita.fecha} ${cita.horaInicio}`;
 
-    const horario = await calcularHorario({
-      fecha: datos.fecha || cita.fecha,
-      horaInicio: datos.horaInicio || cita.horaInicio,
-      duracionMinutos: cita.duracionMinutos,
-      profesional: profesional._id,
-      paciente: cita.paciente,
-      excluirId: cita._id
-    });
+    if (datos.observaciones !== undefined) {
+      cita.observaciones = datos.observaciones;
+    }
 
-    cita.set({ ...horario, profesional: profesional._id, estado: ESTADOS_CITA.PENDIENTE });
-    cita.historial.push({
-      accion: 'REPROGRAMADA',
-      estado: ESTADOS_CITA.PENDIENTE,
-      detalle: `De ${anterior} a ${horario.fecha} ${horario.horaInicio}`,
-      usuario: usuario._id
+    await conAgendaBloqueada(profesional._id, async () => {
+      const horario = await calcularHorario({
+        fecha: datos.fecha || cita.fecha,
+        horaInicio: datos.horaInicio || cita.horaInicio,
+        duracionMinutos: cita.duracionMinutos,
+        profesional: profesional._id,
+        paciente: cita.paciente,
+        excluirId: cita._id
+      });
+
+      cita.set({ ...horario, profesional: profesional._id, estado: ESTADOS_CITA.PENDIENTE });
+      cita.historial.push({
+        accion: 'REPROGRAMADA',
+        estado: ESTADOS_CITA.PENDIENTE,
+        detalle: `De ${anterior} a ${horario.fecha} ${horario.horaInicio}`,
+        usuario: usuario._id
+      });
+      await cita.save();
     });
+    return obtener(cita._id, usuario);
   }
 
   if (datos.observaciones !== undefined) {
@@ -305,7 +342,14 @@ export async function cambiarEstado(id, { estado, motivo }, usuario) {
     cambios.motivoCancelacion = motivo;
   }
 
-  const actualizada = await Cita.findOneAndUpdate({ _id: cita._id, estado: cita.estado }, cambios, { new: true });
+  const condicion = { _id: cita._id, estado: cita.estado };
+  if (estado === ESTADOS_CITA.CANCELADA) {
+    // Un pago en curso reserva su monto en este contador antes de crearse; así la cancelación
+    // no puede colarse entre la validación de pagos y el registro de un pago simultáneo (RN-27).
+    condicion.pagosRegistradosCentavos = { $not: { $gt: 0 } };
+  }
+
+  const actualizada = await Cita.findOneAndUpdate(condicion, cambios, { new: true });
   if (!actualizada) {
     throw new ApiError(409, 'La cita fue modificada por otro usuario. Actualice e intente de nuevo');
   }
