@@ -35,6 +35,7 @@ const routes = [
       { path: 'pacientes', name: 'admin-pacientes', component: () => import('@/views/admin/PacientesView.vue'), meta: { roles: [ADMINISTRADOR, RECEPCIONISTA] } },
       { path: 'pacientes/:id', name: 'admin-paciente-detalle', component: () => import('@/views/admin/PacienteDetalleView.vue'), meta: { roles: [ADMINISTRADOR, RECEPCIONISTA] } },
       { path: 'responsables', name: 'admin-responsables', component: () => import('@/views/admin/ResponsablesView.vue'), meta: { roles: [ADMINISTRADOR, RECEPCIONISTA] } },
+      { path: 'profesionales', name: 'admin-profesionales', component: () => import('@/views/admin/ProfesionalesView.vue'), meta: { roles: [ADMINISTRADOR, RECEPCIONISTA] } },
       { path: 'servicios', name: 'admin-servicios', component: () => import('@/views/admin/ServiciosView.vue'), meta: { roles: [ADMINISTRADOR, RECEPCIONISTA] } },
       { path: 'usuarios', name: 'admin-usuarios', component: () => import('@/views/admin/UsuariosView.vue'), meta: { roles: [ADMINISTRADOR] } }
     ]
