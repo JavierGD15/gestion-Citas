@@ -9,6 +9,7 @@ import contactoRoutes from './contacto.routes.js';
 import pacienteRoutes from './paciente.routes.js';
 import responsableRoutes from './responsable.routes.js';
 import profesionalRoutes from './profesional.routes.js';
+import solicitudRoutes from './solicitud.routes.js';
 
 const router = Router();
 
@@ -22,5 +23,6 @@ router.use('/contacto', contactoRoutes);
 router.use('/pacientes', pacienteRoutes);
 router.use('/responsables', responsableRoutes);
 router.use('/profesionales', profesionalRoutes);
+router.use('/solicitudes-cita', solicitudRoutes);
 
 export default router;

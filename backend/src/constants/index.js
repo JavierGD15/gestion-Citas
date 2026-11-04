@@ -50,3 +50,9 @@ export const SEXOS = Object.freeze({
 });
 
 export const MAYORIA_EDAD = 18;
+
+export const ESTADOS_SOLICITUD = Object.freeze({
+  PENDIENTE: 'PENDIENTE',
+  ATENDIDA: 'ATENDIDA',
+  RECHAZADA: 'RECHAZADA'
+});
