@@ -5,3 +5,4 @@ export { default as Horario } from './Horario.js';
 export { default as MensajeContacto } from './MensajeContacto.js';
 export { default as Contador } from './Contador.js';
 export { default as Paciente } from './Paciente.js';
+export { default as Responsable } from './Responsable.js';
