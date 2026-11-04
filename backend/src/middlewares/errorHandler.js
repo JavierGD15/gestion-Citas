@@ -22,6 +22,10 @@ function normalizeError(err) {
     return { statusCode: 400, message: 'El cuerpo de la solicitud no es un JSON válido' };
   }
 
+  if (err.name === 'StrictModeError') {
+    return { statusCode: 400, message: 'La solicitud contiene campos no permitidos' };
+  }
+
   if (err.type === 'entity.too.large') {
     return { statusCode: 413, message: 'El cuerpo de la solicitud excede el tamaño permitido' };
   }
