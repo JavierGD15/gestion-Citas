@@ -5,3 +5,10 @@ export const SEXOS = Object.freeze({
 });
 
 export const PARENTESCOS = Object.freeze(['Madre', 'Padre', 'Tutor legal', 'Abuelo(a)', 'Tío(a)', 'Hermano(a)', 'Otro']);
+
+export const ESTADOS_CITA = Object.freeze({
+  PENDIENTE: 'Pendiente',
+  CONFIRMADA: 'Confirmada',
+  COMPLETADA: 'Completada',
+  CANCELADA: 'Cancelada'
+});

@@ -20,3 +20,9 @@ export async function obtener(req, res) {
 export async function rechazar(req, res) {
   ok(res, await solicitudService.rechazar(req.params.id, req.body.motivo, req.user), { message: 'Solicitud rechazada' });
 }
+
+export async function convertir(req, res) {
+  created(res, await solicitudService.convertirEnCita(req.params.id, req.body, req.user), {
+    message: 'Solicitud atendida y cita programada correctamente'
+  });
+}

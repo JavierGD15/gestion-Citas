@@ -1,8 +1,8 @@
 <template>
   <section>
     <div class="page-header">
-      <h1>Pacientes</h1>
-      <button type="button" class="btn btn-primary" @click="abrirFormulario()">Registrar paciente</button>
+      <h1>{{ puedeEditar ? 'Pacientes' : 'Mis pacientes' }}</h1>
+      <button v-if="puedeEditar" type="button" class="btn btn-primary" @click="abrirFormulario()">Registrar paciente</button>
     </div>
 
     <div class="card">
@@ -27,8 +27,8 @@
               <th>Paciente</th>
               <th>Código</th>
               <th>Edad</th>
-              <th>Teléfono</th>
-              <th>Inicio del proceso</th>
+              <th v-if="puedeEditar">Teléfono</th>
+              <th v-if="puedeEditar">Inicio del proceso</th>
               <th>Estado</th>
               <th>Acciones</th>
             </tr>
@@ -43,14 +43,15 @@
               </td>
               <td>{{ paciente.codigo }}</td>
               <td>{{ paciente.edad }} años</td>
-              <td>{{ paciente.telefono }}</td>
-              <td>{{ formatearFecha(paciente.fechaInicioProceso) }}</td>
+              <td v-if="puedeEditar">{{ paciente.telefono }}</td>
+              <td v-if="puedeEditar">{{ formatearFecha(paciente.fechaInicioProceso) }}</td>
               <td><StatusBadge :estado="paciente.estado" /></td>
               <td>
                 <div class="actions">
                   <RouterLink :to="{ name: 'admin-paciente-detalle', params: { id: paciente._id } }" class="btn btn-secondary btn-sm">Ver</RouterLink>
-                  <button type="button" class="btn btn-secondary btn-sm" @click="abrirFormulario(paciente)">Editar</button>
+                  <button v-if="puedeEditar" type="button" class="btn btn-secondary btn-sm" @click="abrirFormulario(paciente)">Editar</button>
                   <button
+                    v-if="puedeEditar"
                     type="button"
                     class="btn btn-sm"
                     :class="paciente.estado === 'ACTIVO' ? 'btn-danger' : 'btn-success'"
@@ -75,7 +76,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import PacienteForm from '@/components/admin/PacienteForm.vue';
 import AvatarImg from '@/components/common/AvatarImg.vue';
 import FormField from '@/components/common/FormField.vue';
@@ -83,11 +84,15 @@ import PaginationBar from '@/components/common/PaginationBar.vue';
 import StatusBadge from '@/components/common/StatusBadge.vue';
 import { useListado } from '@/composables/useListado';
 import pacientesService from '@/services/pacientes.service';
+import { useAuthStore } from '@/stores/auth';
 import { useNotificationsStore } from '@/stores/notifications';
 import { mensajeError } from '@/utils/errors';
 import { formatearFecha } from '@/utils/format';
+import { ROLES } from '@/utils/roles';
 
+const auth = useAuthStore();
 const notifications = useNotificationsStore();
+const puedeEditar = computed(() => auth.tieneRol(ROLES.ADMINISTRADOR, ROLES.RECEPCIONISTA));
 const { items, meta, cargando, filtros, cargar, buscar } = useListado(pacientesService.listar, { q: '', estado: '' });
 
 const mostrarFormulario = ref(false);

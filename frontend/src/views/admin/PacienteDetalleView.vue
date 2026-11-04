@@ -26,20 +26,23 @@
         <dd>{{ formatearFecha(paciente.fechaNacimiento) }} ({{ paciente.edad }} años)</dd>
         <dt>Sexo</dt>
         <dd>{{ SEXOS[paciente.sexo] }}</dd>
-        <dt>Teléfono</dt>
-        <dd>{{ paciente.telefono }}</dd>
-        <dt>Dirección</dt>
-        <dd>{{ paciente.direccion }}</dd>
-        <dt>Inicio del proceso</dt>
-        <dd>{{ formatearFecha(paciente.fechaInicioProceso) }}</dd>
-        <dt>Observaciones</dt>
-        <dd>{{ paciente.observaciones || 'Sin observaciones' }}</dd>
-        <dt>Registrado</dt>
-        <dd>{{ formatearFechaHora(paciente.createdAt) }}</dd>
+        <template v-if="puedeEditar">
+          <dt>Teléfono</dt>
+          <dd>{{ paciente.telefono }}</dd>
+          <dt>Dirección</dt>
+          <dd>{{ paciente.direccion }}</dd>
+          <dt>Inicio del proceso</dt>
+          <dd>{{ formatearFecha(paciente.fechaInicioProceso) }}</dd>
+          <dt>Observaciones</dt>
+          <dd>{{ paciente.observaciones || 'Sin observaciones' }}</dd>
+          <dt>Registrado</dt>
+          <dd>{{ formatearFechaHora(paciente.createdAt) }}</dd>
+        </template>
       </dl>
     </div>
 
     <PacienteResponsables v-if="tabActiva === 'responsables'" :paciente="paciente" :editable="puedeEditar" />
+    <PacienteCitas v-if="tabActiva === 'citas'" :paciente="paciente" :puede-programar="puedeEditar" />
 
     <PacienteForm v-model="mostrarFormulario" :paciente="paciente" @saved="cargar" />
   </section>
@@ -50,6 +53,7 @@ import { computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import PacienteForm from '@/components/admin/PacienteForm.vue';
 import PacienteResponsables from '@/components/admin/PacienteResponsables.vue';
+import PacienteCitas from '@/components/admin/PacienteCitas.vue';
 import AvatarImg from '@/components/common/AvatarImg.vue';
 import StatusBadge from '@/components/common/StatusBadge.vue';
 import pacientesService from '@/services/pacientes.service';
@@ -71,10 +75,13 @@ const tabActiva = ref('datos');
 
 const puedeEditar = computed(() => auth.tieneRol(ROLES.ADMINISTRADOR, ROLES.RECEPCIONISTA));
 
-const tabs = computed(() => [
-  { id: 'datos', titulo: 'Datos generales' },
-  { id: 'responsables', titulo: 'Responsables' }
-]);
+const tabs = computed(() =>
+  [
+    { id: 'datos', titulo: 'Datos generales' },
+    { id: 'responsables', titulo: 'Responsables', soloGestion: true },
+    { id: 'citas', titulo: 'Citas' }
+  ].filter((tab) => puedeEditar.value || !tab.soloGestion)
+);
 
 async function cargar() {
   try {
