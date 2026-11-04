@@ -81,3 +81,25 @@ export const TIPOS_MATERIAL = Object.freeze({
   EJERCICIO: 'EJERCICIO',
   OTRO: 'OTRO'
 });
+
+export const METODOS_PAGO = Object.freeze({
+  EFECTIVO: 'EFECTIVO',
+  TRANSFERENCIA: 'TRANSFERENCIA',
+  TARJETA: 'TARJETA'
+});
+
+export const ESTADOS_PAGO = Object.freeze({
+  REGISTRADO: 'REGISTRADO',
+  ANULADO: 'ANULADO'
+});
+
+export const ESTADOS_FINANCIEROS = Object.freeze({
+  PENDIENTE: 'PENDIENTE',
+  PARCIAL: 'PARCIAL',
+  PAGADO: 'PAGADO'
+});
+
+export const ESTADOS_CAJA = Object.freeze({
+  ABIERTA: 'ABIERTA',
+  CERRADA: 'CERRADA'
+});

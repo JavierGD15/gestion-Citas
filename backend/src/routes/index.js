@@ -12,6 +12,8 @@ import profesionalRoutes from './profesional.routes.js';
 import solicitudRoutes from './solicitud.routes.js';
 import citaRoutes from './cita.routes.js';
 import materialRoutes from './material.routes.js';
+import pagoRoutes from './pago.routes.js';
+import cajaRoutes from './caja.routes.js';
 
 const router = Router();
 
@@ -28,5 +30,7 @@ router.use('/profesionales', profesionalRoutes);
 router.use('/solicitudes-cita', solicitudRoutes);
 router.use('/citas', citaRoutes);
 router.use('/materiales', materialRoutes);
+router.use('/pagos', pagoRoutes);
+router.use('/cajas', cajaRoutes);
 
 export default router;

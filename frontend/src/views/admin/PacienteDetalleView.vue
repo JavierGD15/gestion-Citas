@@ -44,6 +44,7 @@
     <PacienteResponsables v-if="tabActiva === 'responsables'" :paciente="paciente" :editable="puedeEditar" />
     <PacienteCitas v-if="tabActiva === 'citas'" :paciente="paciente" :puede-programar="puedeEditar" />
     <PacienteMateriales v-if="tabActiva === 'materiales'" :paciente="paciente" />
+    <PacientePagos v-if="tabActiva === 'pagos'" :paciente="paciente" />
 
     <PacienteForm v-model="mostrarFormulario" :paciente="paciente" @saved="cargar" />
   </section>
@@ -56,6 +57,7 @@ import PacienteForm from '@/components/admin/PacienteForm.vue';
 import PacienteResponsables from '@/components/admin/PacienteResponsables.vue';
 import PacienteCitas from '@/components/admin/PacienteCitas.vue';
 import PacienteMateriales from '@/components/admin/PacienteMateriales.vue';
+import PacientePagos from '@/components/admin/PacientePagos.vue';
 import AvatarImg from '@/components/common/AvatarImg.vue';
 import StatusBadge from '@/components/common/StatusBadge.vue';
 import pacientesService from '@/services/pacientes.service';
@@ -82,7 +84,8 @@ const tabs = computed(() =>
     { id: 'datos', titulo: 'Datos generales' },
     { id: 'responsables', titulo: 'Responsables', soloGestion: true },
     { id: 'citas', titulo: 'Citas' },
-    { id: 'materiales', titulo: 'Materiales', roles: [ROLES.ADMINISTRADOR, ROLES.PROFESIONAL] }
+    { id: 'materiales', titulo: 'Materiales', roles: [ROLES.ADMINISTRADOR, ROLES.PROFESIONAL] },
+    { id: 'pagos', titulo: 'Pagos', soloGestion: true }
   ].filter((tab) => (puedeEditar.value || !tab.soloGestion) && (!tab.roles || auth.tieneRol(...tab.roles)))
 );
 

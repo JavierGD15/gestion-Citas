@@ -9,7 +9,9 @@ import { combinarFechaHora, diaSemana, sumarMinutos } from '../utils/fechas.js';
 import { buildMeta, getPagination } from '../utils/pagination.js';
 import { obtenerActivo as obtenerProfesionalActivo, obtenerPorUsuario } from './profesional.service.js';
 import { tieneResponsable } from './responsable.service.js';
-import { DIAS_SEMANA, ESTADOS, ESTADOS_CITA, ESTADOS_CITA_ACTIVOS, ROLES, TRANSICIONES_CITA } from '../constants/index.js';
+import { adjuntarResumen, resumenCita } from './finanzas.service.js';
+import Pago from '../models/Pago.js';
+import { DIAS_SEMANA, ESTADOS, ESTADOS_CITA, ESTADOS_CITA_ACTIVOS, ESTADOS_PAGO, ROLES, TRANSICIONES_CITA } from '../constants/index.js';
 
 export const POPULATE_CITA = [
   { path: 'paciente', select: 'codigo nombres apellidos fotografia fechaNacimiento telefono estado' },
@@ -190,7 +192,7 @@ export async function listar(query, usuario) {
       .limit(paginacion.limit),
     Cita.countDocuments(filtro)
   ]);
-  return { data, meta: buildMeta(paginacion, total) };
+  return { data: await adjuntarResumen(data), meta: buildMeta(paginacion, total) };
 }
 
 export async function calendario(query, usuario) {
@@ -211,7 +213,7 @@ export async function obtener(id, usuario) {
   if (profesionalPropio && !cita.profesional._id.equals(profesionalPropio._id)) {
     throw new ApiError(403, 'Solo puede consultar sus citas asignadas');
   }
-  return cita;
+  return { ...cita.toJSON(), finanzas: await resumenCita(cita) };
 }
 
 export async function actualizar(id, datos, usuario) {
@@ -291,6 +293,10 @@ export async function cambiarEstado(id, { estado, motivo }, usuario) {
     throw new ApiError(422, `No es posible cambiar una cita de ${cita.estado} a ${estado}`);
   }
 
+  if (estado === ESTADOS_CITA.CANCELADA && (await Pago.exists({ cita: cita._id, estado: ESTADOS_PAGO.REGISTRADO }))) {
+    throw new ApiError(422, 'La cita tiene pagos válidos. Primero deben anularse sus pagos mientras la caja correspondiente permanezca abierta');
+  }
+
   const cambios = {
     estado,
     $push: { historial: { accion: 'CAMBIO_ESTADO', estado, detalle: motivo || '', usuario: usuario._id, fecha: new Date() } }
@@ -313,7 +319,8 @@ export async function historialPaciente(pacienteId, usuario) {
   if (profesionalPropio) {
     filtro.profesional = profesionalPropio._id;
   }
-  return Cita.find(filtro).select('-historial').populate(POPULATE_CITA.slice(1, 3)).sort({ inicio: -1 });
+  const citas = await Cita.find(filtro).select('-historial').populate(POPULATE_CITA.slice(1, 3)).sort({ inicio: -1 });
+  return adjuntarResumen(citas);
 }
 
 export async function pacientesDelProfesional(usuario) {

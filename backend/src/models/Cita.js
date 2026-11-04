@@ -34,6 +34,7 @@ const citaSchema = new mongoose.Schema(
       validate: { validator: Number.isInteger, message: 'El precio debe expresarse en centavos enteros' }
     },
     estado: { type: String, enum: Object.values(ESTADOS_CITA), default: ESTADOS_CITA.PENDIENTE },
+    pagosRegistradosCentavos: { type: Number, default: 0, min: 0, select: false },
     observaciones: { type: String, trim: true, maxlength: 2000, default: '' },
     motivoCancelacion: { type: String, trim: true, maxlength: 500, default: '' },
     solicitud: { type: mongoose.Schema.Types.ObjectId, ref: 'SolicitudCita', default: null },

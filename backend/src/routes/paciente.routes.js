@@ -3,6 +3,7 @@ import * as controller from '../controllers/paciente.controller.js';
 import * as responsableController from '../controllers/responsable.controller.js';
 import * as citaController from '../controllers/cita.controller.js';
 import * as materialController from '../controllers/material.controller.js';
+import * as pagoController from '../controllers/pago.controller.js';
 import { authenticate, authorize } from '../middlewares/auth.js';
 import validate from '../middlewares/validate.js';
 import { ROLES } from '../constants/index.js';
@@ -27,6 +28,7 @@ router.put('/:id', gestion, validate(actualizarPacienteRules), controller.actual
 router.patch('/:id/estado', gestion, validate(estadoPacienteRules), controller.cambiarEstado);
 router.get('/:id/responsables', gestion, validate([mongoIdParam()]), responsableController.listarPorPaciente);
 router.get('/:id/citas', todos, validate([mongoIdParam()]), citaController.historialPaciente);
+router.get('/:id/pagos', gestion, validate([mongoIdParam()]), pagoController.pagosDePaciente);
 router.get(
   '/:id/materiales',
   authorize(ROLES.ADMINISTRADOR, ROLES.PROFESIONAL),

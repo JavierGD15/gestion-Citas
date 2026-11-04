@@ -7,8 +7,15 @@ import { computed } from 'vue';
 
 const props = defineProps({
   estado: { type: String, required: true },
-  etiquetas: { type: Object, default: () => ({}) }
+  etiquetas: { type: Object, default: () => ({}) },
+  financiero: { type: Boolean, default: false }
 });
+
+const TONOS_FINANCIEROS = {
+  PENDIENTE: 'danger',
+  PARCIAL: 'warning',
+  PAGADO: 'success'
+};
 
 const TONOS = {
   ACTIVO: 'success',
@@ -29,13 +36,14 @@ const TONOS = {
   NUEVO: 'info'
 };
 
-const tono = computed(() => TONOS[props.estado] || 'muted');
+const tono = computed(() => (props.financiero ? TONOS_FINANCIEROS[props.estado] : TONOS[props.estado]) || 'muted');
 const etiqueta = computed(() => props.etiquetas[props.estado] || props.estado.replaceAll('_', ' '));
 </script>
 
 <style scoped>
 .badge {
   display: inline-block;
+  align-self: flex-start;
   padding: 0.15rem 0.6rem;
   border-radius: 999px;
   font-size: 0.75rem;

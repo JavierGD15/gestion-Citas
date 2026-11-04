@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import * as controller from '../controllers/cita.controller.js';
+import * as pagoController from '../controllers/pago.controller.js';
 import { authenticate, authorize } from '../middlewares/auth.js';
 import validate from '../middlewares/validate.js';
 import { ROLES } from '../constants/index.js';
@@ -26,5 +27,7 @@ router.get('/:id', todos, validate([mongoIdParam()]), controller.obtener);
 router.post('/', gestion, validate(crearCitaRules), controller.crear);
 router.put('/:id', gestion, validate(actualizarCitaRules), controller.actualizar);
 router.patch('/:id/estado', todos, validate(estadoCitaRules), controller.cambiarEstado);
+router.get('/:id/pagos', gestion, validate([mongoIdParam()]), pagoController.pagosDeCita);
+router.get('/:id/saldo', gestion, validate([mongoIdParam()]), pagoController.saldoCita);
 
 export default router;

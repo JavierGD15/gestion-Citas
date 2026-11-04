@@ -36,17 +36,20 @@ import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 import menuItems from '@/router/menu';
 import { useAuthStore } from '@/stores/auth';
+import { useCajaStore } from '@/stores/caja';
 import { useUiStore } from '@/stores/ui';
 import { ETIQUETAS_ROL } from '@/utils/roles';
 
 const auth = useAuthStore();
 const ui = useUiStore();
+const caja = useCajaStore();
 const router = useRouter();
 
 const menu = computed(() => menuItems.filter((item) => item.roles.includes(auth.rol)));
 
 function cerrarSesion() {
   auth.limpiar();
+  caja.limpiar();
   router.push({ name: 'login' });
 }
 </script>

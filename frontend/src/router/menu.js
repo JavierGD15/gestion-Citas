@@ -7,6 +7,8 @@ export default [
   { titulo: 'Calendario', ruta: 'admin-calendario', roles: TODOS_LOS_ROLES },
   { titulo: 'Citas', ruta: 'admin-citas', roles: TODOS_LOS_ROLES },
   { titulo: 'Solicitudes', ruta: 'admin-solicitudes', roles: [ADMINISTRADOR, RECEPCIONISTA] },
+  { titulo: 'Pagos', ruta: 'admin-pagos', roles: [ADMINISTRADOR, RECEPCIONISTA] },
+  { titulo: 'Caja diaria', ruta: 'admin-caja', roles: [ADMINISTRADOR, RECEPCIONISTA] },
   { titulo: 'Pacientes', ruta: 'admin-pacientes', roles: TODOS_LOS_ROLES },
   { titulo: 'Responsables', ruta: 'admin-responsables', roles: [ADMINISTRADOR, RECEPCIONISTA] },
   { titulo: 'Materiales', ruta: 'admin-materiales', roles: [ADMINISTRADOR, PROFESIONAL] },
