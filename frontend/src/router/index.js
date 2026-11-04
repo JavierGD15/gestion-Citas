@@ -4,7 +4,7 @@ import AdminLayout from '@/layouts/AdminLayout.vue';
 import { useAuthStore } from '@/stores/auth';
 import { ROLES, TODOS_LOS_ROLES } from '@/utils/roles';
 
-const { ADMINISTRADOR } = ROLES;
+const { ADMINISTRADOR, RECEPCIONISTA } = ROLES;
 
 const routes = [
   {
@@ -26,6 +26,7 @@ const routes = [
     children: [
       { path: '', name: 'admin-dashboard', component: () => import('@/views/admin/DashboardView.vue'), meta: { roles: TODOS_LOS_ROLES } },
       { path: 'cuenta', name: 'admin-cuenta', component: () => import('@/views/admin/CuentaView.vue'), meta: { roles: TODOS_LOS_ROLES } },
+      { path: 'servicios', name: 'admin-servicios', component: () => import('@/views/admin/ServiciosView.vue'), meta: { roles: [ADMINISTRADOR, RECEPCIONISTA] } },
       { path: 'usuarios', name: 'admin-usuarios', component: () => import('@/views/admin/UsuariosView.vue'), meta: { roles: [ADMINISTRADOR] } }
     ]
   },
