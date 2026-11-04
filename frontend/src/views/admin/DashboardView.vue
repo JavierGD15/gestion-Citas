@@ -18,6 +18,15 @@
       </RouterLink>
     </div>
 
+    <div v-if="puedeGestionar" class="card caja-resumen">
+      <div class="section-header">
+        <h2>Resumen de caja diaria</h2>
+        <RouterLink :to="{ name: 'admin-caja' }">{{ caja.abierta ? 'Ir a caja' : 'Abrir caja' }}</RouterLink>
+      </div>
+      <ResumenCaja v-if="caja.abierta" :resumen="caja.actual.resumen" />
+      <p v-else-if="caja.cargada" class="text-muted">No tiene una caja abierta. Abra una caja para registrar pagos.</p>
+    </div>
+
     <div class="card">
       <div class="section-header">
         <h2>{{ esProfesional ? 'Mis citas de hoy' : 'Citas de hoy' }}</h2>
@@ -56,15 +65,18 @@
 
 <script setup>
 import { computed, onMounted, ref } from 'vue';
+import ResumenCaja from '@/components/admin/ResumenCaja.vue';
 import StatusBadge from '@/components/common/StatusBadge.vue';
 import citasService from '@/services/citas.service';
 import solicitudesService from '@/services/solicitudes.service';
 import { useAuthStore } from '@/stores/auth';
+import { useCajaStore } from '@/stores/caja';
 import { ESTADOS_CITA } from '@/utils/catalogos';
 import { fechaISO, formatearFechaLarga } from '@/utils/format';
 import { ETIQUETAS_ROL, ROLES } from '@/utils/roles';
 
 const auth = useAuthStore();
+const caja = useCajaStore();
 const hoy = fechaISO();
 const esProfesional = computed(() => auth.tieneRol(ROLES.PROFESIONAL));
 const puedeGestionar = computed(() => auth.tieneRol(ROLES.ADMINISTRADOR, ROLES.RECEPCIONISTA));
@@ -86,6 +98,7 @@ onMounted(async () => {
     citasHoy.value = [];
   }
   if (puedeGestionar.value) {
+    caja.cargarActual().catch(() => {});
     try {
       solicitudesPendientes.value = (await solicitudesService.listar({ estado: 'PENDIENTE', limit: 1 })).meta.total;
     } catch {
@@ -97,6 +110,10 @@ onMounted(async () => {
 
 <style scoped>
 .indicadores {
+  margin-bottom: 1rem;
+}
+
+.caja-resumen {
   margin-bottom: 1rem;
 }
 
