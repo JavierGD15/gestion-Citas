@@ -9,3 +9,5 @@ export { default as Responsable } from './Responsable.js';
 export { default as Profesional } from './Profesional.js';
 export { default as SolicitudCita } from './SolicitudCita.js';
 export { default as Cita } from './Cita.js';
+export { default as Material } from './Material.js';
+export { default as AsignacionMaterial } from './AsignacionMaterial.js';

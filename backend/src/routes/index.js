@@ -11,6 +11,7 @@ import responsableRoutes from './responsable.routes.js';
 import profesionalRoutes from './profesional.routes.js';
 import solicitudRoutes from './solicitud.routes.js';
 import citaRoutes from './cita.routes.js';
+import materialRoutes from './material.routes.js';
 
 const router = Router();
 
@@ -26,5 +27,6 @@ router.use('/responsables', responsableRoutes);
 router.use('/profesionales', profesionalRoutes);
 router.use('/solicitudes-cita', solicitudRoutes);
 router.use('/citas', citaRoutes);
+router.use('/materiales', materialRoutes);
 
 export default router;

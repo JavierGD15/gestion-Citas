@@ -12,3 +12,12 @@ export const ESTADOS_CITA = Object.freeze({
   COMPLETADA: 'Completada',
   CANCELADA: 'Cancelada'
 });
+
+export const TIPOS_MATERIAL = Object.freeze({
+  DOCUMENTO: 'Documento',
+  VIDEO: 'Video',
+  AUDIO: 'Audio',
+  ENLACE: 'Enlace',
+  EJERCICIO: 'Ejercicio',
+  OTRO: 'Otro'
+});
