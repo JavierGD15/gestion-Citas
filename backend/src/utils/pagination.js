@@ -11,3 +11,21 @@ export function buildMeta({ page, limit }, total) {
 export function escapeRegex(text) {
   return String(text).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
+
+const VARIANTES = {
+  a: '[aáàäâ]',
+  e: '[eéèëê]',
+  i: '[iíìïî]',
+  o: '[oóòöô]',
+  u: '[uúùüû]',
+  n: '[nñ]'
+};
+
+export function searchRegex(texto) {
+  const base = String(texto)
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .toLowerCase();
+  const patron = escapeRegex(base).replace(/[aeioun]/g, (letra) => VARIANTES[letra]);
+  return new RegExp(patron, 'i');
+}

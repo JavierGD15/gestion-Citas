@@ -1,6 +1,6 @@
 import Usuario from '../models/Usuario.js';
 import ApiError from '../utils/ApiError.js';
-import { buildMeta, escapeRegex, getPagination } from '../utils/pagination.js';
+import { buildMeta, getPagination, searchRegex } from '../utils/pagination.js';
 import { ESTADOS } from '../constants/index.js';
 
 const CAMPOS_EDITABLES = ['nombres', 'apellidos', 'correo', 'rol'];
@@ -23,7 +23,7 @@ export async function listar(query) {
     filtro.estado = query.estado;
   }
   if (query.q) {
-    const regex = new RegExp(escapeRegex(query.q), 'i');
+    const regex = searchRegex(query.q);
     filtro.$or = [{ nombres: regex }, { apellidos: regex }, { correo: regex }];
   }
 
