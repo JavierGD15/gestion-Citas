@@ -10,7 +10,12 @@ const profesionalSchema = new mongoose.Schema(
     telefono: { type: String, required: true, trim: true, maxlength: 20 },
     descripcion: { type: String, trim: true, maxlength: 1000, default: '' },
     fotografia: { type: String, trim: true, default: '' },
-    estado: { type: String, enum: Object.values(ESTADOS), default: ESTADOS.ACTIVO }
+    estado: { type: String, enum: Object.values(ESTADOS), default: ESTADOS.ACTIVO },
+    bloqueoAgenda: {
+      type: { token: mongoose.Schema.Types.ObjectId, expira: Date },
+      default: null,
+      select: false
+    }
   },
   { timestamps: true, collection: 'profesionales' }
 );

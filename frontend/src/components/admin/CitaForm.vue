@@ -222,7 +222,7 @@ async function guardar() {
     servicio: [requerido],
     profesional: [requerido],
     fecha: [requerido, (valor) => valor >= hoy || 'La fecha no puede ser pasada'],
-    horaInicio: [requerido]
+    horaInicio: [requerido, () => !horaFin.value || horaFin.value <= '23:59' || 'La cita no puede terminar después de la medianoche']
   });
   if (Object.keys(errores.value).length > 0) {
     return;
@@ -232,13 +232,22 @@ async function guardar() {
   try {
     let resultado;
     if (props.cita) {
-      resultado = await citasService.actualizar(props.cita._id, {
+      const { cita } = props;
+      const cambiaHorario =
+        form.fecha !== cita.fecha || form.horaInicio !== cita.horaInicio || form.profesional !== cita.profesional?._id;
+      resultado = await citasService.actualizar(cita._id, {
         profesional: form.profesional,
         fecha: form.fecha,
         horaInicio: form.horaInicio,
         observaciones: form.observaciones
       });
-      notifications.exito('Cita reprogramada correctamente');
+      if (!cambiaHorario) {
+        notifications.exito('Observaciones de la cita actualizadas');
+      } else if (cita.estado === 'CONFIRMADA') {
+        notifications.exito('Cita reprogramada. Quedó PENDIENTE y debe confirmarse de nuevo');
+      } else {
+        notifications.exito('Cita reprogramada correctamente');
+      }
     } else if (props.solicitud) {
       resultado = (await convertirSolicitud(props.solicitud._id, valores)).cita;
       notifications.exito('Solicitud atendida y cita programada correctamente');

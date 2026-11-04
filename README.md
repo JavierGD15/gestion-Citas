@@ -206,6 +206,7 @@ Son credenciales ficticias exclusivas para el entorno local de demostración.
 | --- | :---: | :---: | :---: |
 | Usuarios | ✔ | | |
 | Contenido institucional, horarios y mensajes | ✔ | | |
+| Horarios de atención (consulta) | ✔ | ✔ | ✔ |
 | Servicios | ✔ | Consulta | |
 | Profesionales | ✔ | Consulta | Perfil propio |
 | Pacientes y responsables | ✔ | ✔ | Información básica de sus pacientes |
@@ -217,6 +218,8 @@ Son credenciales ficticias exclusivas para el entorno local de demostración.
 | Materiales: consultar y asignar | ✔ | | A sus pacientes |
 | Pagos y saldos | ✔ | ✔ | |
 | Caja diaria | Todas las cajas | Solo las propias | |
+
+Un usuario con rol PROFESIONAL necesita un perfil profesional para ver sus citas y pacientes. Desde **Profesionales** se puede crear el usuario y el perfil a la vez, o vincular un perfil a un usuario PROFESIONAL creado antes en **Usuarios**.
 
 Los permisos se verifican en el backend con el middleware `authorize`. El frontend oculta las opciones no permitidas, pero la autorización real ocurre en la API.
 
@@ -279,11 +282,16 @@ Relaciones principales:
 - Los pagos no se eliminan físicamente (RN-26); solo se anulan con justificación mientras su caja está abierta.
 - Una cita con pagos válidos no puede cancelarse (RN-27).
 - Las citas validan traslapes por profesional y por paciente, horario de atención, fechas pasadas, entidades activas y responsables de menores (RN-01 a RN-14).
+- La programación y reprogramación de citas de un mismo profesional se serializa con un bloqueo en MongoDB (campo `bloqueoAgenda` del profesional, con expiración automática), de modo que dos solicitudes simultáneas no pueden reservar el mismo horario (RN-01).
+- Un pago en curso reserva su monto en la cita antes de crearse; la cancelación exige que esa reserva sea cero, así una cita nunca queda CANCELADA con pagos válidos aunque ambas operaciones lleguen al mismo tiempo (RN-27).
+- El carrusel de inicio exige entre 5 y 12 imágenes.
 
 ## Seguridad
 
 - Contraseñas con bcrypt (12 rondas); nunca se devuelven en la API.
 - JWT HS256 con algoritmo fijado al verificar y expiración configurable; los usuarios inactivos pierden el acceso inmediatamente.
+- El inicio de sesión tarda lo mismo exista o no el correo, para no revelar qué cuentas están registradas.
+- Las consultas del portal público no envían el token: el portal muestra solo servicios activos aunque haya una sesión iniciada, y un token vencido no lo bloquea.
 - Autorización por rol en cada endpoint privado.
 - Validación de todas las entradas con express-validator, y rechazo de operadores de MongoDB (`$`), claves con punto, `__proto__`, `constructor` y parámetros de consulta repetidos.
 - Límite de intentos de inicio de sesión y de envíos de formularios públicos.

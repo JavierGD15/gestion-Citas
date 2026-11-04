@@ -74,18 +74,28 @@
 
     <BaseModal v-model="mostrarFormulario" :title="editando ? 'Editar profesional' : 'Registrar profesional'" size="lg">
       <form id="form-profesional" class="form-grid" novalidate @submit.prevent="guardar">
-        <FormField id="pr-nombres" label="Nombres" :error="errores.nombres" required>
-          <input id="pr-nombres" v-model.trim="form.nombres" maxlength="80" />
+        <FormField v-if="!editando" id="pr-origen" label="Usuario de acceso" class="span-all">
+          <select id="pr-origen" v-model="form.usuarioId">
+            <option value="">Crear un usuario nuevo</option>
+            <option v-for="usuario in usuariosSinPerfil" :key="usuario._id" :value="usuario._id">
+              Vincular a {{ usuario.nombres }} {{ usuario.apellidos }} ({{ usuario.correo }})
+            </option>
+          </select>
         </FormField>
-        <FormField id="pr-apellidos" label="Apellidos" :error="errores.apellidos" required>
-          <input id="pr-apellidos" v-model.trim="form.apellidos" maxlength="80" />
-        </FormField>
-        <FormField id="pr-correo" label="Correo de acceso" :error="errores.correo" required>
-          <input id="pr-correo" v-model.trim="form.correo" type="email" maxlength="120" />
-        </FormField>
-        <FormField v-if="!editando" id="pr-password" label="Contraseña inicial" :error="errores.password" hint="Mínimo 8 caracteres con letras y números" required>
-          <input id="pr-password" v-model="form.password" type="password" autocomplete="new-password" />
-        </FormField>
+        <template v-if="!vinculando">
+          <FormField id="pr-nombres" label="Nombres" :error="errores.nombres" required>
+            <input id="pr-nombres" v-model.trim="form.nombres" maxlength="80" />
+          </FormField>
+          <FormField id="pr-apellidos" label="Apellidos" :error="errores.apellidos" required>
+            <input id="pr-apellidos" v-model.trim="form.apellidos" maxlength="80" />
+          </FormField>
+          <FormField id="pr-correo" label="Correo de acceso" :error="errores.correo" required>
+            <input id="pr-correo" v-model.trim="form.correo" type="email" maxlength="120" />
+          </FormField>
+          <FormField v-if="!editando" id="pr-password" label="Contraseña inicial" :error="errores.password" hint="Mínimo 8 caracteres con letras y números" required>
+            <input id="pr-password" v-model="form.password" type="password" autocomplete="new-password" />
+          </FormField>
+        </template>
         <FormField id="pr-especialidad" label="Especialidad" :error="errores.especialidad" required>
           <input id="pr-especialidad" v-model.trim="form.especialidad" maxlength="120" />
         </FormField>
@@ -117,6 +127,7 @@ import BaseModal from '@/components/common/BaseModal.vue';
 import FormField from '@/components/common/FormField.vue';
 import StatusBadge from '@/components/common/StatusBadge.vue';
 import profesionalesService from '@/services/profesionales.service';
+import usuariosService from '@/services/usuarios.service';
 import { useAuthStore } from '@/stores/auth';
 import { useNotificationsStore } from '@/stores/notifications';
 import { erroresPorCampo, mensajeError } from '@/utils/errors';
@@ -132,6 +143,7 @@ const cargando = ref(false);
 const filtros = reactive({ q: '', estado: '' });
 
 const vacio = () => ({
+  usuarioId: '',
   nombres: '',
   apellidos: '',
   correo: '',
@@ -147,6 +159,22 @@ const errores = ref({});
 const editando = ref(null);
 const guardando = ref(false);
 const mostrarFormulario = ref(false);
+const usuariosSinPerfil = ref([]);
+const vinculando = computed(() => !editando.value && Boolean(form.usuarioId));
+
+// Usuarios con rol PROFESIONAL creados desde Usuarios que aún no tienen perfil profesional.
+async function cargarUsuariosSinPerfil() {
+  try {
+    const [{ data: usuarios }, todos] = await Promise.all([
+      usuariosService.listar({ rol: ROLES.PROFESIONAL, estado: 'ACTIVO', limit: 100 }),
+      profesionalesService.listar()
+    ]);
+    const conPerfil = new Set(todos.map((profesional) => String(profesional.usuario?._id)));
+    usuariosSinPerfil.value = usuarios.filter((usuario) => !conPerfil.has(String(usuario._id)));
+  } catch (error) {
+    usuariosSinPerfil.value = [];
+  }
+}
 
 async function cargar() {
   cargando.value = true;
@@ -179,17 +207,20 @@ function abrirFormulario(profesional = null) {
   );
   errores.value = {};
   mostrarFormulario.value = true;
+  if (!profesional) {
+    cargarUsuariosSinPerfil();
+  }
 }
 
 async function guardar() {
   const reglas = {
-    nombres: [requerido, minimo(2)],
-    apellidos: [requerido, minimo(2)],
-    correo: [requerido, correo],
     especialidad: [requerido, minimo(3)],
     telefono: [requerido, telefono]
   };
-  if (!editando.value) {
+  if (!vinculando.value) {
+    Object.assign(reglas, { nombres: [requerido, minimo(2)], apellidos: [requerido, minimo(2)], correo: [requerido, correo] });
+  }
+  if (!editando.value && !vinculando.value) {
     reglas.password = [requerido, password];
   }
   errores.value = validarFormulario(form, reglas);
@@ -199,10 +230,14 @@ async function guardar() {
 
   guardando.value = true;
   try {
-    const { password: clave, ...datos } = form;
+    const { password: clave, usuarioId, ...datos } = form;
     if (editando.value) {
       await profesionalesService.actualizar(editando.value._id, datos);
       notifications.exito('Profesional actualizado correctamente');
+    } else if (usuarioId) {
+      const { nombres, apellidos, correo: _correo, ...perfil } = datos;
+      await profesionalesService.crear({ ...perfil, usuarioId });
+      notifications.exito('Perfil profesional vinculado correctamente');
     } else {
       await profesionalesService.crear({ ...datos, password: clave });
       notifications.exito('Profesional registrado correctamente');

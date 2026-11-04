@@ -47,6 +47,7 @@ const routes = [
       { path: 'responsables', name: 'admin-responsables', component: () => import('@/views/admin/ResponsablesView.vue'), meta: { roles: [ADMINISTRADOR, RECEPCIONISTA] } },
       { path: 'profesionales', name: 'admin-profesionales', component: () => import('@/views/admin/ProfesionalesView.vue'), meta: { roles: [ADMINISTRADOR, RECEPCIONISTA] } },
       { path: 'materiales', name: 'admin-materiales', component: () => import('@/views/admin/MaterialesView.vue'), meta: { roles: [ADMINISTRADOR, PROFESIONAL] } },
+      { path: 'horarios', name: 'admin-horarios', component: () => import('@/views/admin/HorariosView.vue'), meta: { roles: TODOS_LOS_ROLES } },
       { path: 'servicios', name: 'admin-servicios', component: () => import('@/views/admin/ServiciosView.vue'), meta: { roles: [ADMINISTRADOR, RECEPCIONISTA] } },
       { path: 'contenido', name: 'admin-contenido', component: () => import('@/views/admin/ContenidoView.vue'), meta: { roles: [ADMINISTRADOR] } },
       { path: 'mensajes', name: 'admin-mensajes', component: () => import('@/views/admin/MensajesView.vue'), meta: { roles: [ADMINISTRADOR] } },

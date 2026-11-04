@@ -11,11 +11,15 @@ const perfilRules = () => [
   urlRule('fotografia')
 ];
 
-const usuarioRules = () => [
-  body('nombres').trim().isLength({ min: 2, max: 80 }).withMessage('Los nombres deben tener entre 2 y 80 caracteres'),
-  body('apellidos').trim().isLength({ min: 2, max: 80 }).withMessage('Los apellidos deben tener entre 2 y 80 caracteres'),
-  correoRule()
+// `.if()` solo condiciona a los validadores que van después de él, por eso se coloca al
+// inicio de cada cadena cuando los datos del usuario son opcionales.
+const usuarioRules = (campo = body) => [
+  campo('nombres').trim().isLength({ min: 2, max: 80 }).withMessage('Los nombres deben tener entre 2 y 80 caracteres'),
+  campo('apellidos').trim().isLength({ min: 2, max: 80 }).withMessage('Los apellidos deben tener entre 2 y 80 caracteres'),
+  correoRule('correo', campo('correo'))
 ];
+
+const sinUsuarioExistente = (nombre) => body(nombre).if(body('usuarioId').not().exists());
 
 export const listarProfesionalesRules = [
   ...busquedaRules(),
@@ -24,8 +28,8 @@ export const listarProfesionalesRules = [
 
 export const crearProfesionalRules = [
   body('usuarioId').optional().isMongoId().withMessage('Usuario no válido'),
-  ...usuarioRules().map((regla) => regla.if(body('usuarioId').not().exists())),
-  passwordRule().if(body('usuarioId').not().exists()),
+  ...usuarioRules(sinUsuarioExistente),
+  passwordRule('password', sinUsuarioExistente('password')),
   ...perfilRules()
 ];
 

@@ -14,8 +14,10 @@ export function configurarSesion({ tokenProvider, unauthorizedHandler }) {
   onUnauthorized = unauthorizedHandler;
 }
 
+// Las solicitudes marcadas con `publico: true` (portal) nunca envían el token de sesión,
+// para que el portal muestre lo mismo a cualquier visitante.
 api.interceptors.request.use((config) => {
-  const token = getToken();
+  const token = config.publico ? '' : getToken();
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }

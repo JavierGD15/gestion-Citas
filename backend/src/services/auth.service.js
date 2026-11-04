@@ -1,3 +1,4 @@
+import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import env from '../config/env.js';
 import Usuario from '../models/Usuario.js';
@@ -11,9 +12,13 @@ export function generarToken(usuario) {
   });
 }
 
+// Hash de relleno: si el correo no existe se compara igual contra él para que el tiempo
+// de respuesta no revele qué correos están registrados.
+const HASH_RELLENO = bcrypt.hashSync('sigca-hash-de-relleno', 12);
+
 export async function login(correo, password) {
   const usuario = await Usuario.findOne({ correo }).select('+password');
-  const valido = usuario ? await usuario.compararPassword(password) : false;
+  const valido = usuario ? await usuario.compararPassword(password) : (await bcrypt.compare(password, HASH_RELLENO)) && false;
 
   if (!valido) {
     throw new ApiError(401, 'Correo o contraseña incorrectos');

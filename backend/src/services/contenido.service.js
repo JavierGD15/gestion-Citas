@@ -100,8 +100,8 @@ function normalizarGeneral(datos = {}) {
     throw new ApiError(400, 'El nombre del centro debe tener al menos 3 caracteres');
   }
   const carrusel = Array.isArray(datos.carrusel) ? datos.carrusel : [];
-  if (carrusel.length > 12) {
-    throw new ApiError(400, 'El carrusel admite un máximo de 12 imágenes');
+  if (carrusel.length < 5 || carrusel.length > 12) {
+    throw new ApiError(400, 'El carrusel debe tener entre 5 y 12 imágenes');
   }
   return {
     nombreCentro,
