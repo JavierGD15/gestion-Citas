@@ -11,7 +11,13 @@ const routes = [
     path: '/',
     component: PublicLayout,
     children: [
-      { path: '', name: 'inicio', component: () => import('@/views/public/HomeView.vue') }
+      { path: '', name: 'inicio', component: () => import('@/views/public/HomeView.vue') },
+      { path: 'nosotros', name: 'nosotros', component: () => import('@/views/public/NosotrosView.vue') },
+      { path: 'servicios', name: 'servicios', component: () => import('@/views/public/ServiciosView.vue') },
+      { path: 'educativo', name: 'educativo', component: () => import('@/views/public/EducativoView.vue') },
+      { path: 'corporativo', name: 'corporativo', component: () => import('@/views/public/CorporativoView.vue') },
+      { path: 'horarios', name: 'horarios', component: () => import('@/views/public/HorariosView.vue') },
+      { path: 'contacto', name: 'contacto', component: () => import('@/views/public/ContactoView.vue') }
     ]
   },
   {
