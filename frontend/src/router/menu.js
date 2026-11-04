@@ -4,6 +4,7 @@ const { ADMINISTRADOR, RECEPCIONISTA } = ROLES;
 
 export default [
   { titulo: 'Panel', ruta: 'admin-dashboard', roles: TODOS_LOS_ROLES },
+  { titulo: 'Calendario', ruta: 'admin-calendario', roles: TODOS_LOS_ROLES },
   { titulo: 'Citas', ruta: 'admin-citas', roles: TODOS_LOS_ROLES },
   { titulo: 'Solicitudes', ruta: 'admin-solicitudes', roles: [ADMINISTRADOR, RECEPCIONISTA] },
   { titulo: 'Pacientes', ruta: 'admin-pacientes', roles: TODOS_LOS_ROLES },

@@ -17,6 +17,12 @@
     "vite": "^6.4.4"
   },
   "dependencies": {
+    "@fullcalendar/core": "^6.1.19",
+    "@fullcalendar/daygrid": "^6.1.19",
+    "@fullcalendar/interaction": "^6.1.19",
+    "@fullcalendar/list": "^6.1.19",
+    "@fullcalendar/timegrid": "^6.1.19",
+    "@fullcalendar/vue3": "^6.1.19",
     "axios": "^1.20.0",
     "pinia": "^3.0.4",
     "vue": "^3.5.44",
